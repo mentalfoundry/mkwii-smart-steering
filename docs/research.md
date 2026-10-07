@@ -153,29 +153,26 @@ and branches. Never `kmWrite32` an arbitrary value into StaticR: a value
 whose top byte is 1, 4–6, 10, 32–38, 64 or 65 would be executed as a
 command in pass 1.
 
-## Riivolution settings
+## Passing settings from Riivolution
 
-Riivolution can't patch `Code.pul` (Kamek places it dynamically), so each
-setting is a word that a `<memory>` patch writes to a fixed address and the
-code reads (`Settings` in `src/SmartSteering.cpp`). The block starts at
-`0x80005800`, in padding of the unused debugger (TRK) interrupt table
-`0x80004000–0x80005F34`:
+The Riivolution option is only **Disabled / Enabled** now. Versions 1.1.0 to
+1.3.0 also had **Automatic drift only** and **Manual drift only** choices.
+1.4.0 removed them because the per-player toggle below covers the same need.
+The way they passed a value to the code still works if a setting is needed
+again:
 
-- `0x80005734–0x80005C00` is zero in both the RMCP and RMCE `main.dol`.
-  The patches use `original="00000000"` to guard against anything else
-  being there.
-- Pulsar's loader overwrites `0x80004000–0x80004ADC` and keeps its variables
-  at `0x80004ADC–0x80004AE7` (from its disassembly). Nothing else touches
-  the table in retail.
-
-| Address | Setting | Values |
-|---|---|---|
-| `0x80005800` | Drift mode | 0 = all players, 1 = Automatic drift only, 2 = Manual drift only |
-
-Automatic drift is read from `KartState+0x14 & 0x10` (flag `0x84`). The
-`KartState` constructor (`0x805943B4`) sets it from the player's
-controller, and `KartState::reset` (`0x80594594`) clears only `+0x4..+0x10`,
-so it holds for the whole race.
+- Riivolution can't patch `Code.pul` (Kamek places it dynamically), so a
+  `<memory>` patch wrote a word to a fixed address that the code read.
+- The word was `0x80005800`, in padding of the unused debugger (TRK)
+  interrupt table `0x80004000–0x80005F34`. `0x80005734–0x80005C00` is zero
+  in both the RMCP and RMCE `main.dol`, and the patch used
+  `original="00000000"` as a guard. Pulsar's loader overwrites
+  `0x80004000–0x80004ADC` and keeps its variables at `0x80004ADC–0x80004AE7`
+  (from its disassembly). Nothing else touches the table in retail.
+- A player's drift mode is `KartState+0x14 & 0x10` (flag `0x84`). The
+  `KartState` constructor (`0x805943B4`) sets it from the player's
+  controller, and `KartState::reset` (`0x80594594`) clears only
+  `+0x4..+0x10`, so it holds for the whole race.
 
 ## Drift select toggle
 
@@ -220,6 +217,10 @@ kart in the slot left on was assisted.
 
 **Mode.** The pages also run for Time Trials, battle and online. The switch
 only acts when the menus' game mode (`RaceConfig+0x1760`) is GP (0) or VS (1).
+
+**Default.** Every player starts off (`sOn[]` in `.bss`, zeroed by the
+loader). The choice is kept in memory only, so it resets when the game
+restarts.
 
 ## Established by testing in Dolphin
 

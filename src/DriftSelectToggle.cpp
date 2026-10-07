@@ -2,11 +2,11 @@
 //
 // On the single-player and split-screen drift select pages, in offline Grand
 // Prix and VS, each player can press the menu "switch" button to turn Smart
-// Steering off or back on for themselves. The page's bottom bar, which fits
+// Steering on or off for themselves. The page's bottom bar, which fits
 // one line, shows the state: on the single-player page at 70% scale ahead of
 // the game's description of the highlighted drift mode, on the split-screen
 // page (where the game leaves it empty) for every player. Everyone starts
-// with it on, and a choice lasts until the game is restarted.
+// with it off, and a choice lasts until the game is restarted.
 //
 // The switch button is input action 8, which the game raises for menu button
 // bit 0x100 (ButtonInfo::Update, 0x805EEF20) but never handles itself; Pulsar
@@ -20,7 +20,7 @@
 namespace DriftSelectToggle {
 
 static const int kMaxHudSlots = 4;
-static bool sOff[kMaxHudSlots]; // .bss, zeroed by the loader: everyone starts on
+static bool sOn[kMaxHudSlots]; // .bss, zeroed by the loader: everyone starts off
 
 static const int kTextMax = 96;
 static u16 sText[kTextMax];
@@ -87,7 +87,7 @@ static void ShowText(void* page, u32 bmgId) {
 static void ShowSingle(void* page) {
     int n = AppendScale(0, 70);
     n = Append(n, "Smart Steering: ");
-    n = Append(n, sOff[0] ? "Off" : "On");
+    n = Append(n, sOn[0] ? "On" : "Off");
     n = Append(n, " (-)");
     ResetInfo();
     sInfo.bmgToPass[0] = BMG_STRING;
@@ -110,7 +110,7 @@ static void ShowMulti(void* page) {
         char label[] = "   P1: ";
         label[4] = (char)('1' + i);
         n = Append(n, label);
-        n = Append(n, sOff[i] ? "Off" : "On");
+        n = Append(n, sOn[i] ? "On" : "Off");
     }
     ResetInfo();
     sInfo.strings[0] = sText;
@@ -125,10 +125,10 @@ static void OnSwitchPress(PageHandler* self, u32 hudSlot) {
     if (!IsAvailable() || self->page == nullptr) return;
     if (self->multi) {
         if (hudSlot >= kMaxHudSlots) return;
-        sOff[hudSlot] = !sOff[hudSlot];
+        sOn[hudSlot] = !sOn[hudSlot];
         ShowMulti(self->page);
     } else {
-        sOff[0] = !sOff[0];
+        sOn[0] = !sOn[0];
         ShowSingle(self->page);
     }
 }
@@ -174,6 +174,6 @@ kmWritePointer(0x808D9BF8, MultiDriftSelectOnActivate);
 } // namespace DriftSelectToggle
 
 bool SmartSteeringToggle_isOn(s32 hudSlot) {
-    if (hudSlot < 0 || hudSlot >= DriftSelectToggle::kMaxHudSlots) return true;
-    return !DriftSelectToggle::sOff[hudSlot];
+    if (hudSlot < 0 || hudSlot >= DriftSelectToggle::kMaxHudSlots) return false;
+    return DriftSelectToggle::sOn[hudSlot];
 }

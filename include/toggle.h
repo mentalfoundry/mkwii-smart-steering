@@ -6,7 +6,8 @@
 
 #include "kamek/types.hpp"
 
-// True unless the player in this local (HUD) slot turned Smart Steering off.
+// True if the player in this local (HUD) slot turned Smart Steering on (it
+// starts off).
 bool SmartSteeringToggle_isOn(s32 hudSlot);
 
 #endif

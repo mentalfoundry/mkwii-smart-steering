@@ -20,9 +20,8 @@
 //
 // Only active in offline Grand Prix and VS. Time Trials are excluded so
 // ghosts (which record raw input) stay valid; online is excluded for
-// fairness. The "Automatic drift only" and "Manual drift only" Riivolution
-// choices also skip players using the other drift mode, and each player can
-// turn it off on the drift select screen (DriftSelectToggle.cpp).
+// fairness. Each player turns it on for themselves on the drift select screen
+// (DriftSelectToggle.cpp); it starts off.
 
 #include "game.h"
 #include "toggle.h"
@@ -87,21 +86,6 @@ static const u16 kButtonBrakeOrDrift = 0x2;
 static const u16 kButtonDrift = 0x8;
 
 static const int kMaxPlayers = 12;
-
-// ---- Riivolution settings ----
-
-// Words written by the XML's <memory> patches, one per setting. They live in
-// padding of the unused debugger interrupt table (0x80005734..0x80005C00 is
-// zero on the PAL and NTSC-U discs); Pulsar's loader at 0x80004000 only uses
-// up to 0x80004AE8. A choice left at its default writes nothing, so every
-// setting reads 0 unless chosen.
-struct Settings {
-    u32 driftMode; // 0x80005800: which drift mode gets the assist (kDriftMode*)
-};
-static const u32 kDriftModeAll = 0;
-static const u32 kDriftModeAutomatic = 1;
-static const u32 kDriftModeManual = 2;
-static const volatile Settings* const sSettings = (const volatile Settings*)0x80005800;
 
 struct Assist {
     KPad* kpad;        // the player's pad, matched in the input hook
@@ -316,15 +300,10 @@ static void Update(AIPlayer* self) {
     if (!KartObjectProxy_isLocal(kart) || KartObjectProxy_isCpu(kart) || KartObjectProxy_isGhost(kart)) return;
     if (RaceManager_spInstance == nullptr) return;
     if (idx >= RaceConfig_spInstance->playerCount) return;
-    u32 driftMode = sSettings->driftMode;
-    if (driftMode != kDriftModeAll) {
-        bool automatic = KartState_on(((KartObjectProxyLayout*)kart)->accessor->state, KART_FLAG_AUTOMATIC_DRIFT);
-        if (driftMode == kDriftModeAutomatic ? !automatic : automatic) return;
-    }
     if (!SmartSteeringToggle_isOn(RaceConfig_getHudSlot(RaceConfig_spInstance, idx))) {
 #ifdef MKWIISS_DEBUG
         if ((sDebugSkipFrame++ % 120) == 0) {
-            OSReport("[SmartSteering] p%d (screen P%d) skipped: turned off on the drift screen\n", idx,
+            OSReport("[SmartSteering] p%d (screen P%d) skipped: off on the drift screen\n", idx,
                      RaceConfig_getHudSlot(RaceConfig_spInstance, idx) + 1);
         }
 #endif

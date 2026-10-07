@@ -6,14 +6,6 @@
 				<choice name="Enabled">
 					<patch id="MKWIISS_Load"/>
 				</choice>
-				<choice name="Automatic drift only">
-					<patch id="MKWIISS_Load"/>
-					<patch id="MKWIISS_AutomaticDriftOnly"/>
-				</choice>
-				<choice name="Manual drift only">
-					<patch id="MKWIISS_Load"/>
-					<patch id="MKWIISS_ManualDriftOnly"/>
-				</choice>
 			</option>
 		</section>
 	</options>
@@ -35,16 +27,5 @@
 		<memory offset="0x8000A3B4" value="4BFF9C4c" original="4e800020" /> <!--RMCE REL-->
 		<memory valuefile="/MKWiiSmartSteering/Loader.pul" offset="0x80004000"/>
 		<folder external="/MKWiiSmartSteering/Binaries" disc="/Binaries" create="true"/>
-	</patch>
-	<!--
-		Settings: one word each from 0x80005800, in zero padding of the unused
-		debugger interrupt table (same on RMCP and RMCE). Code.pul reads them;
-		see the Settings struct in src/SmartSteering.cpp.
-	-->
-	<patch id="MKWIISS_AutomaticDriftOnly">
-		<memory offset="0x80005800" value="00000001" original="00000000" />
-	</patch>
-	<patch id="MKWIISS_ManualDriftOnly">
-		<memory offset="0x80005800" value="00000002" original="00000000" />
 	</patch>
 </wiidisc>
