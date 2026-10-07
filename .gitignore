@@ -1,0 +1,16 @@
+# Reference clones and game-derived files (never commit game data)
+ref/
+work/
+
+# Build output
+build/
+release/
+dist/MKWiiSmartSteering/Binaries/Code.pul
+tools/kamek/
+tools/kamek-src/bin/
+tools/kamek-src/obj/
+
+# Proprietary compiler (install locally, see docs/BUILDING.md)
+tools/cw/
+
+__pycache__/

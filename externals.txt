@@ -1,0 +1,98 @@
+##Game symbols (PAL / RMCP01). See docs/research.md for how each was verified.##
+
+##main.dol##
+OSReport = 0x801A25D0
+
+##StaticR.rel .text (loaded at 0x805103B4)##
+CourseMap_getEnemyPoint = 0x80514B7C
+KPadPlayer_calc = 0x80521768
+KartObjectProxy_getPos = 0x8059020C
+KartObjectProxy_isLocal = 0x80590650
+KartObjectProxy_isCpu = 0x80590664
+KartObjectProxy_isGhost = 0x80590678
+KartObjectProxy_getPlayerIdx = 0x80590A5C
+EnemyAI_isOnGround = 0x807264E8
+AIPlayer_updateRealPlayerDriving = 0x80732C70
+isGp = 0x8073965C
+isVs = 0x80739684
+isOnline = 0x807396EC
+
+##StaticR.rel .bss (loaded at 0x809BD6E0)##
+CourseMap_spInstance = 0x809BD6E8
+KPadDirector_spInstance = 0x809BD70C
+RaceConfig_spInstance = 0x809BD728
+RaceManager_spInstance = 0x809BD730
+
+##main.dol: CodeWarrior register save/restore helpers (decomp map, matches Pulsar)##
+_restfpr_14 = 0x80021520
+_restfpr_15 = 0x80021524
+_restfpr_16 = 0x80021528
+_restfpr_17 = 0x8002152C
+_restfpr_18 = 0x80021530
+_restfpr_19 = 0x80021534
+_restfpr_20 = 0x80021538
+_restfpr_21 = 0x8002153C
+_restfpr_22 = 0x80021540
+_restfpr_23 = 0x80021544
+_restfpr_24 = 0x80021548
+_restfpr_25 = 0x8002154C
+_restfpr_26 = 0x80021550
+_restfpr_27 = 0x80021554
+_restfpr_28 = 0x80021558
+_restfpr_29 = 0x8002155C
+_restfpr_30 = 0x80021560
+_restfpr_31 = 0x80021564
+_restgpr_14 = 0x800215B8
+_restgpr_15 = 0x800215BC
+_restgpr_16 = 0x800215C0
+_restgpr_17 = 0x800215C4
+_restgpr_18 = 0x800215C8
+_restgpr_19 = 0x800215CC
+_restgpr_20 = 0x800215D0
+_restgpr_21 = 0x800215D4
+_restgpr_22 = 0x800215D8
+_restgpr_23 = 0x800215DC
+_restgpr_24 = 0x800215E0
+_restgpr_25 = 0x800215E4
+_restgpr_26 = 0x800215E8
+_restgpr_27 = 0x800215EC
+_restgpr_28 = 0x800215F0
+_restgpr_29 = 0x800215F4
+_restgpr_30 = 0x800215F8
+_restgpr_31 = 0x800215FC
+_savefpr_14 = 0x800214D4
+_savefpr_15 = 0x800214D8
+_savefpr_16 = 0x800214DC
+_savefpr_17 = 0x800214E0
+_savefpr_18 = 0x800214E4
+_savefpr_19 = 0x800214E8
+_savefpr_20 = 0x800214EC
+_savefpr_21 = 0x800214F0
+_savefpr_22 = 0x800214F4
+_savefpr_23 = 0x800214F8
+_savefpr_24 = 0x800214FC
+_savefpr_25 = 0x80021500
+_savefpr_26 = 0x80021504
+_savefpr_27 = 0x80021508
+_savefpr_28 = 0x8002150C
+_savefpr_29 = 0x80021510
+_savefpr_30 = 0x80021514
+_savefpr_31 = 0x80021518
+_savegpr_14 = 0x8002156C
+_savegpr_15 = 0x80021570
+_savegpr_16 = 0x80021574
+_savegpr_17 = 0x80021578
+_savegpr_18 = 0x8002157C
+_savegpr_19 = 0x80021580
+_savegpr_20 = 0x80021584
+_savegpr_21 = 0x80021588
+_savegpr_22 = 0x8002158C
+_savegpr_23 = 0x80021590
+_savegpr_24 = 0x80021594
+_savegpr_25 = 0x80021598
+_savegpr_26 = 0x8002159C
+_savegpr_27 = 0x800215A0
+_savegpr_28 = 0x800215A4
+_savegpr_29 = 0x800215A8
+_savegpr_30 = 0x800215AC
+_savegpr_31 = 0x800215B0

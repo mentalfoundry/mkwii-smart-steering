@@ -1,0 +1,31 @@
+<wiidisc version="1">
+	<id game="RMC"/>
+	<options>
+		<section name="MKWii Smart Steering">
+			<option name="Smart Steering">
+				<choice name="Enabled">
+					<patch id="MKWIISS_Load"/>
+				</choice>
+			</option>
+		</section>
+	</options>
+	<!--
+		Kamek loader from Pulsar (MIT). The hooks below branch from an empty
+		function in the DOL and the StaticR.rel load path into the loader at
+		0x80004000, which reads /Binaries/Code.pul. Each line only applies
+		when the original instruction matches, so only the running region is
+		patched.
+
+		Only PAL (RMCP) and NTSC-U (RMCE) are listed: the mod's addresses
+		have been checked against those discs (tools/verify_addresses.py).
+		RMCJ/RMCK hook lines are left out until they are verified the same way.
+	-->
+	<patch id="MKWIISS_Load">
+		<memory offset="0x80242698" value="4BDC1968" original="4e800020" /> <!--RMCP DOL-->
+		<memory offset="0x8000A3F4" value="4bff9c0c" original="4e800020" /> <!--RMCP REL-->
+		<memory offset="0x802417dc" value="4BDC2824" original="4e800020" /> <!--RMCE DOL-->
+		<memory offset="0x8000A3B4" value="4BFF9C4c" original="4e800020" /> <!--RMCE REL-->
+		<memory valuefile="/MKWiiSmartSteering/Loader.pul" offset="0x80004000"/>
+		<folder external="/MKWiiSmartSteering/Binaries" disc="/Binaries" create="true"/>
+	</patch>
+</wiidisc>
