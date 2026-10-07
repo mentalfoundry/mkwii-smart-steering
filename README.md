@@ -49,9 +49,9 @@ and your own copy of Mario Kart Wii.
   you're fully in control.
 - Braking or reversing switches it off while you hold the button. Jumps and
   tricks are left alone.
-- Choose **Automatic drift only** instead of **Enabled** to assist only
-  players who picked Automatic drift. Manual drift players then race
-  without it, which suits mixed-skill VS races.
+- Choose **Automatic drift only** or **Manual drift only** instead of
+  **Enabled** to assist only players who picked that drift mode. Everyone
+  else races without it, which suits mixed-skill VS races.
 
 ## Credits
 

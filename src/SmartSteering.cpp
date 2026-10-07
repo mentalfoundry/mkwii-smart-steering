@@ -20,8 +20,8 @@
 //
 // Only active in offline Grand Prix and VS. Time Trials are excluded so
 // ghosts (which record raw input) stay valid; online is excluded for
-// fairness. The "Automatic drift only" Riivolution choice also skips players
-// using Manual drift.
+// fairness. The "Automatic drift only" and "Manual drift only" Riivolution
+// choices also skip players using the other drift mode.
 
 #include "game.h"
 
@@ -94,8 +94,11 @@ static const int kMaxPlayers = 12;
 // up to 0x80004AE8. A choice left at its default writes nothing, so every
 // setting reads 0 unless chosen.
 struct Settings {
-    u32 automaticDriftOnly; // 0x80005800: assist only players using Automatic drift
+    u32 driftMode; // 0x80005800: which drift mode gets the assist (kDriftMode*)
 };
+static const u32 kDriftModeAll = 0;
+static const u32 kDriftModeAutomatic = 1;
+static const u32 kDriftModeManual = 2;
 static const volatile Settings* const sSettings = (const volatile Settings*)0x80005800;
 
 struct Assist {
@@ -310,9 +313,10 @@ static void Update(AIPlayer* self) {
     if (!KartObjectProxy_isLocal(kart) || KartObjectProxy_isCpu(kart) || KartObjectProxy_isGhost(kart)) return;
     if (RaceManager_spInstance == nullptr) return;
     if (idx >= RaceConfig_spInstance->playerCount) return;
-    if (sSettings->automaticDriftOnly &&
-        !KartState_on(((KartObjectProxyLayout*)kart)->accessor->state, KART_FLAG_AUTOMATIC_DRIFT)) {
-        return;
+    u32 driftMode = sSettings->driftMode;
+    if (driftMode != kDriftModeAll) {
+        bool automatic = KartState_on(((KartObjectProxyLayout*)kart)->accessor->state, KART_FLAG_AUTOMATIC_DRIFT);
+        if (driftMode == kDriftModeAutomatic ? !automatic : automatic) return;
     }
     a.inRace = true;
 

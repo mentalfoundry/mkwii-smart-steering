@@ -10,6 +10,10 @@
 					<patch id="MKWIISS_Load"/>
 					<patch id="MKWIISS_AutomaticDriftOnly"/>
 				</choice>
+				<choice name="Manual drift only">
+					<patch id="MKWIISS_Load"/>
+					<patch id="MKWIISS_ManualDriftOnly"/>
+				</choice>
 			</option>
 		</section>
 	</options>
@@ -39,5 +43,8 @@
 	-->
 	<patch id="MKWIISS_AutomaticDriftOnly">
 		<memory offset="0x80005800" value="00000001" original="00000000" />
+	</patch>
+	<patch id="MKWIISS_ManualDriftOnly">
+		<memory offset="0x80005800" value="00000002" original="00000000" />
 	</patch>
 </wiidisc>

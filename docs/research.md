@@ -170,7 +170,7 @@ code reads (`Settings` in `src/SmartSteering.cpp`). The block starts at
 
 | Address | Setting | Values |
 |---|---|---|
-| `0x80005800` | Automatic drift only | 0 = all players, 1 = only Automatic drift |
+| `0x80005800` | Drift mode | 0 = all players, 1 = Automatic drift only, 2 = Manual drift only |
 
 Automatic drift is read from `KartState+0x14 & 0x10` (flag `0x84`). The
 `KartState` constructor (`0x805943B4`) sets it from the player's
