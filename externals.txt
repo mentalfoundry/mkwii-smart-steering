@@ -2,6 +2,7 @@
 
 ##main.dol##
 OSReport = 0x801A25D0
+memset = 0x80006038
 
 ##StaticR.rel .text (loaded at 0x805103B4)##
 CourseMap_getEnemyPoint = 0x80514B7C
@@ -16,6 +17,12 @@ AIPlayer_updateRealPlayerDriving = 0x80732C70
 isGp = 0x8073965C
 isVs = 0x80739684
 isOnline = 0x807396EC
+ControlsManipulatorManager_setGlobalHandler = 0x805F0D84
+CtrlMenuInstructionText_setMessage = 0x807E9A38
+MultiDriftSelectPage_onInit = 0x8084AAC4
+MultiDriftSelectPage_onActivate = 0x8084B280
+DriftSelectPage_onInit = 0x8084DDFC
+DriftSelectPage_onButtonSelect = 0x8084E6BC
 
 ##StaticR.rel .bss (loaded at 0x809BD6E0)##
 CourseMap_spInstance = 0x809BD6E8

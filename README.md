@@ -49,6 +49,11 @@ and your own copy of Mario Kart Wii.
   you're fully in control.
 - Braking or reversing switches it off while you hold the button. Jumps and
   tricks are left alone.
+- Each player can turn Smart Steering off or back on for themselves on the
+  Drift Mode screen in Grand Prix and VS. Press **−** on the Wii Remote
+  (**X** on the Classic Controller, **Z** on the GameCube controller); the
+  bottom bar shows **Smart Steering: On** or **Off**. Everyone starts with it
+  on, and the choice lasts until you restart the game.
 - Choose **Automatic drift only** or **Manual drift only** instead of
   **Enabled** to assist only players who picked that drift mode. Everyone
   else races without it, which suits mixed-skill VS races.

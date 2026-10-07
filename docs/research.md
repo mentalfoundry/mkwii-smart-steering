@@ -177,6 +177,50 @@ Automatic drift is read from `KartState+0x14 & 0x10` (flag `0x84`). The
 controller, and `KartState::reset` (`0x80594594`) clears only `+0x4..+0x10`,
 so it holds for the whole race.
 
+## Drift select toggle
+
+`src/DriftSelectToggle.cpp` adds a per-player on/off switch to the drift
+select pages: `Pages::DriftSelect` (single player, vtable `0x808D9DB0`) and
+`Pages::MultiDriftSelect` (split screen, vtable `0x808D9BC8`). Both vtables
+match Pulsar's addresses and the data section of the split StaticR.
+
+**Input.** `ButtonInfo::Update` (`0x805EEF20`) raises action 8 for menu
+button bit `0x100`; nothing in the game registers a handler for it. Pulsar
+calls it the switch press: − on the Wii Remote, X on the Classic Controller,
+Z on the GameCube controller. − was confirmed in Dolphin. After each page's
+`onInit`, a global handler is registered with
+`ControlsManipulatorManager::SetGlobalHandler` (`0x805F0D84`, manager at
+`page+0x430`). Its layout: handler at `+0x1C + id*4`, flags at `+0x40 + id`
+and `+0x49 + id`. `CheckActions` (`0x805F0E94`) calls a global handler
+through vtable `+0x8` with the local player slot, on the first frame of a
+press. `Init`, `Activate` and `OnReset` never clear the handlers.
+
+**Text.** Both pages have a one-line bottom bar (`page+0x2BC`, created for
+every menu page by `MenuPage::onInit`). The single-player page sets it in
+`onButtonSelect` (`0x8084E6BC`) from a table: Manual `0xD17`, Automatic
+`0xD16`, explanation `0xCEE`. The split-screen page leaves it empty.
+Custom text uses two messages present in every PAL and NTSC-U language:
+
+- `0x19CA` (Menu.bmg) is just `{type 0x20, 0}`, which `TextBox_setMessage`
+  (`0x805CDD00`) fills from `MessageInfo.strings[0]`.
+- `0x25B2` (Common.bmg) is `{type 0x11, 0..8}`, which inserts
+  `MessageInfo.bmgToPass[0..8]`. Message 0 doesn't exist, so unused slots
+  print nothing.
+
+On the single-player page the bar is `0x25B2` with the string message first
+and the drift description second. The string starts with the font scale
+escape `1A 0800 0000 0046` (70%, as in Menu.bmg `0x106A`), which also scales
+the description that follows. Two lines don't fit: the second is cut off.
+
+**Race side.** A kart's local slot is `RaceConfig + 0x2D + idx*0xF0`
+(racesScenario players, `hudSlotId`), the same read as
+`RaceConfig::GetHudSlotId` (`0x80531F18`). Tested in Dolphin with two
+players: the switch only changed the pressing player's slot, and only the
+kart in the slot left on was assisted.
+
+**Mode.** The pages also run for Time Trials, battle and online. The switch
+only acts when the menus' game mode (`RaceConfig+0x1760`) is GP (0) or VS (1).
+
 ## Established by testing in Dolphin
 
 - **The AI's steering works for a human kart mid-race.** The human kart's

@@ -203,6 +203,66 @@ struct RaceConfig {
     u8 unk00[0x24];
     u8 playerCount; // 0x24 (racesScenario + 0x4)
 };
+// Local (HUD) slot of race player idx, -1 if not local: racesScenario
+// (+0x20) players (+0x8, 0xF0 each) hudSlotId (+0x5), as read by
+// RaceConfig::GetHudSlotId (0x80531F18: idx * 0xF0, lbz +0x2D, extsb).
+static inline s8 RaceConfig_getHudSlot(const RaceConfig* self, u8 idx) {
+    return *(const s8*)((const u8*)self + 0x2D + idx * 0xF0);
+}
+// Game mode chosen in the menus: menusScenario settings (+0x1758) mode
+// (+0x8), read by DriftSelect's onButtonClick (0x8084E5F8). Same numbering as
+// RaceConfig+0xB70: GP = 0, VS = 1 (Pulsar GameMode).
+static inline u32 RaceConfig_getMenuMode(const RaceConfig* self) {
+    return *(const u32*)((const u8*)self + 0x1760);
+}
+
+// ---- Menus ----
+
+// UI::MessageInfo (Pulsar: Text::Info), size 0xC4. Fills a message's
+// escape sequences: {group 2, type 0x11, i} inserts message bmgToPass[i],
+// {group 2, type 0x20, i} inserts strings[i] (TextBox_setMessage,
+// 0x805CDD00). Constructed by MessageInfo_construct (0x805CD94C): all zero
+// except playerId = -1.
+struct MessageInfo {
+    u32 intToPass[9];   // 0x00
+    u32 bmgToPass[9];   // 0x24
+    void* miis[9];      // 0x48
+    u8 licenseId[9];    // 0x6C
+    u8 pad75[3];
+    s32 playerId[9];    // 0x78
+    const u16* strings[9]; // 0x9C
+    bool useColoredBorder; // 0xC0
+    u8 padC1[3];
+};
+// Messages present in every PAL and NTSC-U language's MenuSingle/MenuMulti
+// archive (checked with work/tools/szs.py):
+static const u32 BMG_CONCAT9 = 0x25B2; // Common.bmg: bmgToPass[0] .. bmgToPass[8]
+static const u32 BMG_STRING = 0x19CA;  // Menu.bmg: strings[0]
+
+// Menu page pieces used by the drift select pages (Pulsar: Pages::Menu /
+// MenuInteractable). bottomText +0x2BC (DriftSelect onButtonSelect,
+// 0x8084E6BC), manipulator manager +0x430
+// (GetManipulatorManager, 0x8084DEE0 / 0x8084AF7C), activePlayerBitfield
+// +0x6BC (written by both pages' onInit).
+struct CtrlMenuInstructionText;
+static inline CtrlMenuInstructionText* MenuPage_getBottomText(void* page) {
+    return *(CtrlMenuInstructionText**)((u8*)page + 0x2BC);
+}
+static inline void* MenuPage_getManipulatorManager(void* page) {
+    return (u8*)page + 0x430;
+}
+static inline u32 MenuPage_getActivePlayers(void* page) {
+    return *(u32*)((u8*)page + 0x6BC);
+}
+static inline s32 PushButton_getId(void* button) {
+    return *(s32*)((u8*)button + 0x240); // read by DriftSelect onButtonSelect
+}
+// A global input handler as ControlsManipulatorManager::CheckActions
+// (0x805F0E94) calls it: through vtable +0x8, with the local player slot.
+struct InputHandler {
+    const void* const* vtable;
+};
+static const u32 INPUT_ACTION_SWITCH = 8; // bit 0x100 of the menu buttons (ButtonInfo::Update)
 
 extern "C" {
 // main.dol
@@ -232,6 +292,18 @@ extern CourseMap* CourseMap_spInstance;
 void AIPlayer_updateRealPlayerDriving(AIPlayer* self);
 // isPaused is KPadDirector+0x4154 (see KPadDirector::calc, 0x805238F0)
 void KPadPlayer_calc(KPad* self, bool isPaused);
+
+// Menus
+void CtrlMenuInstructionText_setMessage(CtrlMenuInstructionText* self, u32 bmgId, const MessageInfo* info);
+// ControlsManipulatorManager::SetGlobalHandler: handler at +0x1C + action * 4,
+// flags at +0x40 + action and +0x49 + action.
+void ControlsManipulatorManager_setGlobalHandler(void* self, u32 action, const InputHandler* handler,
+                                                 bool repeatable, bool pointerDisabled);
+// Originals of the drift select page functions we wrap through vtables
+void DriftSelectPage_onInit(void* self);
+void DriftSelectPage_onButtonSelect(void* self, void* button, u32 hudSlot);
+void MultiDriftSelectPage_onInit(void* self);
+void MultiDriftSelectPage_onActivate(void* self);
 
 // Singletons
 extern RaceManager* RaceManager_spInstance;

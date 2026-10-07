@@ -44,6 +44,10 @@ VTABLE_SLOTS = {  # slot -> function it must hold
     0x808CA7F8: 0x80732C70,  # AI::PlayerBike
     0x808CA850: 0x80732C70,  # AI::PlayerKart
     0x808B2D9C: 0x80521768,  # System::KPadPlayer calc
+    0x808D9DD8: 0x8084DDFC,  # Pages::DriftSelect      onInit
+    0x808D9E14: 0x8084E6BC,  # Pages::DriftSelect      onButtonSelect
+    0x808D9BF0: 0x8084AAC4,  # Pages::MultiDriftSelect onInit
+    0x808D9BF8: 0x8084B280,  # Pages::MultiDriftSelect onActivate
 }
 BSS_SINGLETONS = {
     "CourseMap_spInstance": 0x809BD6E8,

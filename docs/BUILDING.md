@@ -99,6 +99,8 @@ disassembly) and `ref/` (reference clones) out of the repository.
 | Path | What |
 |---|---|
 | `src/SmartSteering.cpp` | The mod |
+| `src/DriftSelectToggle.cpp` | Per-player on/off switch on the drift select screens |
+| `include/toggle.h` | Shared between the two |
 | `include/game.h` | Game structures and functions it uses, with where each was verified |
 | `externals.txt` | Game symbol addresses (PAL) |
 | `versions.txt` | Address translation for other regions (Pulsar's, plus our additions) |
