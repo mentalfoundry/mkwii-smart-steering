@@ -55,6 +55,8 @@ themselves on the **Drift Mode** screen, in Grand Prix and VS:
 
 Your choice lasts until you restart the game.
 
+![The Drift Mode screen, with "Smart Steering: On (-)" in the bottom bar next to the drift description](docs/images/drift-mode-toggle.png)
+
 ## Good to know
 
 - Smart Steering is meant to help, not race for you. Near the racing line
@@ -75,4 +77,5 @@ Want to build it yourself or see how it works? See
 [docs/BUILDING.md](docs/BUILDING.md) and [docs/research.md](docs/research.md).
 
 Mario Kart Wii is a trademark of Nintendo. This project isn't affiliated with
-or endorsed by Nintendo and doesn't include any game files.
+or endorsed by Nintendo and doesn't include any game files. Screenshots show
+Nintendo's game and aren't covered by the MIT License.
