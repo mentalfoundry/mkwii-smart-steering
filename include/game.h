@@ -116,11 +116,23 @@ struct KartMove {
 // countdown ends by KartState::ComputeStartBoost (0x805959D4): -1 means the
 // player held accelerate too long and burns out. Path confirmed by
 // KartObjectProxy::setStartBoostIdx (0x80590380, accessor+0x4 -> +0xA0).
+// Flags: an RKBitField<160> after the vtable, bit n at flags[n / 32] &
+// (1 << n % 32) (decomp src/kart/KartState.hpp, Pulsar bitfield0..4).
 struct KartState {
-    u8 unk00[0x9C];
+    void* vtable;   // 0x00
+    u32 flags[5];   // 0x04
+    u8 unk18[0x9C - 0x18];
     float startBoostCharge; // 0x9C
     s32 startBoostIdx;      // 0xA0, -1 = burnout
 };
+// Set by the KartState constructor (0x805943B4: ori 0x10 into +0x14) from the
+// player's controller when they chose Automatic drift; reset (0x80594594)
+// clears only +0x4..+0x10, so it lasts the race. Pulsar: bitfield4 0x10
+// "automatic drift".
+static const u32 KART_FLAG_AUTOMATIC_DRIFT = 0x84;
+static inline bool KartState_on(const KartState* s, u32 bit) {
+    return (s->flags[bit / 32] & (1u << (bit % 32))) != 0;
+}
 // EGG::Quatf: x, y, z, w; Hamilton product (decomp lib/egg/math/eggQuat.hpp).
 struct Quat {
     float x, y, z, w;

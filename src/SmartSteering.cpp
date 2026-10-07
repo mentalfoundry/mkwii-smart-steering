@@ -20,7 +20,8 @@
 //
 // Only active in offline Grand Prix and VS. Time Trials are excluded so
 // ghosts (which record raw input) stay valid; online is excluded for
-// fairness.
+// fairness. The "Automatic drift only" Riivolution choice also skips players
+// using Manual drift.
 
 #include "game.h"
 
@@ -84,6 +85,18 @@ static const u16 kButtonBrakeOrDrift = 0x2;
 static const u16 kButtonDrift = 0x8;
 
 static const int kMaxPlayers = 12;
+
+// ---- Riivolution settings ----
+
+// Words written by the XML's <memory> patches, one per setting. They live in
+// padding of the unused debugger interrupt table (0x80005734..0x80005C00 is
+// zero on the PAL and NTSC-U discs); Pulsar's loader at 0x80004000 only uses
+// up to 0x80004AE8. A choice left at its default writes nothing, so every
+// setting reads 0 unless chosen.
+struct Settings {
+    u32 automaticDriftOnly; // 0x80005800: assist only players using Automatic drift
+};
+static const volatile Settings* const sSettings = (const volatile Settings*)0x80005800;
 
 struct Assist {
     KPad* kpad;        // the player's pad, matched in the input hook
@@ -297,6 +310,10 @@ static void Update(AIPlayer* self) {
     if (!KartObjectProxy_isLocal(kart) || KartObjectProxy_isCpu(kart) || KartObjectProxy_isGhost(kart)) return;
     if (RaceManager_spInstance == nullptr) return;
     if (idx >= RaceConfig_spInstance->playerCount) return;
+    if (sSettings->automaticDriftOnly &&
+        !KartState_on(((KartObjectProxyLayout*)kart)->accessor->state, KART_FLAG_AUTOMATIC_DRIFT)) {
+        return;
+    }
     a.inRace = true;
 
     const Vec3* pos = KartObjectProxy_getPos(kart);
